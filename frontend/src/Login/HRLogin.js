@@ -5,17 +5,41 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const HRLogin = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const { login, getValidAccessToken } = useAuth();  // Using your custom auth context
+    const { login, getValidAccessToken } = useAuth();
+    
+    const getErrorMessage = (error) => {
+        if (!error.response?.data) return error.message;
+
+        const data = error.response.data;
+
+        if (typeof data === 'object' && data.error) {
+            return data.error;
+        }
+
+        if (typeof data === 'object') {
+            return Object.entries(data)
+                .map(([field, messages]) => {
+                    if (Array.isArray(messages)) {
+                        return `${field}: ${messages.join(', ')}`;
+                    }
+                    return `${field}: ${messages}`;
+                })
+                .join('\n');
+        }
+
+        return String(data);
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/accounts/login/', { username, password });
+            const response = await axios.post('http://127.0.0.1:8000/api/accounts/login/', { email, password });
 
-            const { access, refresh } = response.data.user; // Adjust this based on your API response structure
+            const { access, refresh } = response.data.user; 
             localStorage.setItem('accessToken', access);
             localStorage.setItem('refreshToken', refresh);
 
@@ -23,24 +47,7 @@ const HRLogin = () => {
 
             navigate('/dashboard');
         } catch (error) {
-            alert('Login failed: ' + (error.response?.data?.error || error.message));
-        }
-    };
-
-    // Example: Usage of getValidAccessToken before making API request
-    const fetchProtectedData = async () => {
-        const token = await getValidAccessToken();  // Refresh token if expired
-        if (token) {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/protected/', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching protected data:', error);
-            }
+            alert('Login failed: ' + getErrorMessage(error));
         }
     };
 
@@ -50,8 +57,8 @@ const HRLogin = () => {
                 <form onSubmit={handleSubmit} className="login-form">
                     <h1>HR Login</h1>
                     <label>
-                        <span>Username</span>
-                        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                        <span>Email</span>
+                        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     </label>
                     <label>
                         <span>Password</span>

@@ -5,29 +5,49 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const ApplicantLogin = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth(); // Using your custom auth context
+    const { login } = useAuth();
+
+    const getErrorMessage = (error) => {
+        if (!error.response?.data) return error.message;
+
+        const data = error.response.data;
+
+        if (typeof data === 'object' && data.error) {
+            return data.error;
+        }
+
+        if (typeof data === 'object') {
+            return Object.entries(data)
+                .map(([field, messages]) => {
+                    if (Array.isArray(messages)) {
+                        return `${field}: ${messages.join(', ')}`;
+                    }
+                    return `${field}: ${messages}`;
+                })
+                .join('\n');
+        }
+
+        return String(data);
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/accounts/applicant/login/', { username, password });
+            const response = await axios.post('http://127.0.0.1:8000/api/accounts/applicant/login/', { email, password });
 
-            // Store the access and refresh tokens in localStorage
-            const { access, refresh } = response.data.user; // Adjust based on your API response structure
+            const { access, refresh } = response.data.user;
             localStorage.setItem('accessToken', access);
             localStorage.setItem('refreshToken', refresh);
 
-            // Call the login function from useAuth (assuming it stores user info in context)
-            login({ type: 'applicant', ...response.data.user }); // Ensure this includes the user info
+            login({ type: 'applicant', ...response.data.user });
 
-            // Navigate to the applicant dashboard
             navigate('/applyjob');
         } catch (error) {
-            // Handle errors
-            alert('Login failed: ' + (error.response?.data?.error || error.message));
+            alert('Login failed: ' + getErrorMessage(error));
         }
     };
 
@@ -37,8 +57,8 @@ const ApplicantLogin = () => {
                 <form onSubmit={handleSubmit} className="login-form">
                     <h1>Applicant Login</h1>
                     <label>
-                        <span>Username</span>
-                        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                        <span>Email</span>
+                        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     </label>
                     <label>
                         <span>Password</span>

@@ -10,14 +10,38 @@ const HRRegister = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    const getErrorMessage = (error) => {
+        if (!error.response?.data) return error.message;
+
+        const data = error.response.data;
+
+        if (typeof data === 'object' && data.error) {
+            return data.error;
+        }
+
+        if (typeof data === 'object') {
+            return Object.entries(data)
+                .map(([field, messages]) => {
+                    if (Array.isArray(messages)) {
+                        return `${field}: ${messages.join(', ')}`;
+                    }
+                    return `${field}: ${messages}`;
+                })
+                .join('\n');
+        }
+
+        return String(data);
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/accounts/applicant/register/', { username, email, password });
             alert(response.data.message);
-            navigate('/applicant/login'); 
+            navigate('/applicant/login');
         } catch (error) {
-            alert('Registration failed: ' + error.response.data);
+            alert('Registration failed: ' + getErrorMessage(error));
         }
     };
 

@@ -18,32 +18,52 @@ class HRRegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            user.is_hr = True
-            user.is_approved = False 
-            user.save()
-            return Response({"message": "HR registration successful!"}, status=status.HTTP_201_CREATED)
+            serializer.save(is_hr=True)
+            return Response(
+                {"message": "HR registration successful!"},
+                status=status.HTTP_201_CREATED
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class HRLoginView(APIView):
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
-        user = authenticate(username=username, password=password)
 
-        if user is not None:
-            if user.is_approved:  # Check if the user is approved
-                refresh = RefreshToken.for_user(user)  # Generate refresh and access tokens
-                user_data = {
-                    'id': user.id,
-                    'username': user.username,
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                }
-                return Response({"message": "Login successful!", "user": user_data}, status=status.HTTP_200_OK)
-            return Response({"error": "Account not approved."}, status=status.HTTP_403_FORBIDDEN)
+        if not email or not password:
+            return Response(
+                {"error": "Email and password are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            user = User.objects.get(email=email, is_hr=True)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        user = authenticate(username=user.username, password=password)
+
+        if not user:
+            return Response(
+                {"error": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "message": "Login successful!",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
+        }, status=status.HTTP_200_OK)
+
     
 class ApplicantRegisterView(APIView):
     def post(self, request):
@@ -59,20 +79,43 @@ class ApplicantRegisterView(APIView):
 
 class ApplicantLoginView(APIView):
     def post(self, request):
-        username = request.data.get("username")
+        email = request.data.get("email")
         password = request.data.get("password")
-        user = authenticate(username=username, password=password)
 
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            user_data = {
-                'id': user.id,
-                'username': user.username,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
+        if not email or not password:
+            return Response(
+                {"error": "Email and password are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(email=email, is_applicant=True)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        user = authenticate(username=user.username, password=password)
+
+        if not user:
+            return Response(
+                {"error": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "message": "Login successful!",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
             }
-            return Response({"message": "Login successful!", "user": user_data}, status=status.HTTP_200_OK)
-        return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+        }, status=status.HTTP_200_OK)
+
 
 
 # APIView for handling ApplicantProfile
