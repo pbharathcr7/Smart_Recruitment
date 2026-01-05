@@ -11,6 +11,7 @@ import Jobcreation from './HRDashboard/Jobcreation/Jobcreation';
 import LandingPage from './LandingPage';
 import { ApplyJob } from './ApplicantDashboard/ApplyJob';
 import  Profile  from './ApplicantDashboard/Profile';
+import ApplicantDashboard from './ApplicantDashboard/ApplicantDashboard';
 import { JobApplicants } from './HRDashboard/Dashboard/JobApplicants';
 
 const ProtectedRoute = ({ children, allowedUserType }) => {
@@ -66,24 +67,12 @@ function App() {
               } 
             />
 
-            {/* Applicant Protected routes */}
-            
-            <Route 
-              path="/applyjob" 
-              element={
-                <ProtectedRoute allowedUserType="applicant">
-                  <ApplyJob />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/applicantprofile" 
-              element={
-                <ProtectedRoute allowedUserType="applicant">
-                  <Profile />
-                </ProtectedRoute>
-              } 
-            />
+
+            {/* Applicant Protected routes with layout */}
+            <Route element={<ProtectedRoute allowedUserType="applicant"><ApplicantDashboard /></ProtectedRoute>}>
+              <Route path="/applyjob" element={<ApplyJob />} />
+              <Route path="/applicantprofile" element={<Profile />} />
+            </Route>
 
             {/* Add a catch-all route for 404 Not Found */}
             <Route path="*" element={<Navigate to="/" replace />} />

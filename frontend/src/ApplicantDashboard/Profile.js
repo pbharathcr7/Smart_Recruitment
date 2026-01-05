@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
-import { ApplicantSidebar } from './ApplicantSidebar';
 import axios from 'axios';
 import { useAuth } from './../AuthContext';
 
@@ -111,119 +110,116 @@ const Profile = () => {
     };
 
     return (
-        <div className="dashboard-container">
-            <ApplicantSidebar />
-            <div className="profile-container">
-                <h2>Basic Details</h2>
-                <form>
-                    <div className="form-container">
-                        <div>
-                            <input
-                                type="text"
-                                name="fullName"
-                                placeholder="Full Name"
-                                value={profile.fullName}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="date"
-                                name="dateOfBirth"
-                                placeholder="Date of Birth"
-                                value={profile.dateOfBirth}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <select
-                                name="gender"
-                                value={profile.gender}
-                                onChange={handleChange}
-                            >
-                                <option value="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                name="phone_number"
-                                placeholder="Phone Number"
-                                value={profile.phone_number}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <textarea
-                                name="address"
-                                placeholder="Address"
-                                value={profile.address}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <textarea
-                                name="skills"
-                                placeholder="Skills"
-                                value={profile.skills}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="number"
-                                name="experience"
-                                placeholder="Experience (years)"
-                                value={profile.experience}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                name="course"
-                                placeholder="Current Course"
-                                value={profile.course}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="file"
-                                onChange={handleFileUpload}
-                                accept=".pdf"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                name="institution"
-                                placeholder="Institution Name"
-                                value={profile.institution}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                name="department"
-                                placeholder="Department"
-                                value={profile.department}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <button
-                            type="button"
-                            onClick={handleSubmit}
-                        >
-                            Submit
-                        </button>
+        <div className="profile-container">
+            <h2>Basic Details</h2>
+            <form>
+                <div className="form-container">
+                    <div>
+                        <input
+                            type="text"
+                            name="fullName"
+                            placeholder="Full Name"
+                            value={profile.fullName}
+                            onChange={handleChange}
+                        />
                     </div>
-                </form>
-            </div>
+                    <div>
+                        <input
+                            type="date"
+                            name="dateOfBirth"
+                            placeholder="Date of Birth"
+                            value={profile.dateOfBirth}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <select
+                            name="gender"
+                            value={profile.gender}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            name="phone_number"
+                            placeholder="Phone Number"
+                            value={profile.phone_number}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <textarea
+                            name="address"
+                            placeholder="Address"
+                            value={profile.address}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <textarea
+                            name="skills"
+                            placeholder="Skills"
+                            value={profile.skills}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="number"
+                            name="experience"
+                            placeholder="Experience (years)"
+                            value={profile.experience}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            name="course"
+                            placeholder="Current Course"
+                            value={profile.course}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="file"
+                            onChange={handleFileUpload}
+                            accept=".pdf"
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            name="institution"
+                            placeholder="Institution Name"
+                            value={profile.institution}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            name="department"
+                            placeholder="Department"
+                            value={profile.department}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <button
+                        type="button"
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </button>
+                </div>
+            </form>
         </div>
     );
 };

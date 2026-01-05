@@ -1,13 +1,16 @@
 .applicantsidebar {
-  width: 20%;
-  background-color: #1c1c1c; 
-  padding: 20px;
-  color: white;
-  min-height: 700px;
+  width: 300px;
+  background: linear-gradient(180deg, #1a1d29 0%, #12151f 100%);
+  color: #e2e8f0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .sidebar-item.active {
   background-color: rgba(244, 244, 244, 0.992);

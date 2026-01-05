@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ApplyJob.css'; 
 import { ApplicantSidebar } from './ApplicantSidebar';
-import { useAuth } from './../AuthContext'; // Import your AuthContext
+import { useAuth } from './../AuthContext';
 
 export const ApplyJob = () => {
-  const { getValidAccessToken } = useAuth(); // Get token management function from AuthContext
+  const { getValidAccessToken } = useAuth();
   const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -18,25 +19,23 @@ export const ApplyJob = () => {
         }
       } catch (error) {
         console.error('Error fetching job data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchJobs();
   }, []);
 
-  // Function to handle applying for a job
   const handleApply = async (jobId) => {
     try {
-      // Get the valid access token
       const token = await getValidAccessToken();
 
-      // Check if token exists
       if (!token) {
         alert('You must be logged in to apply for jobs.');
         return;
       }
 
-      // Set the Authorization header with the JWT token
       const config = {
         headers: {
           Authorization: `Bearer ${token}`
@@ -51,34 +50,92 @@ export const ApplyJob = () => {
     }
   };
 
-  if (jobs.length === 0) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="dashboard-container">
+        <ApplicantSidebar />
+        <div className="job-container">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Loading opportunities...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <div className="dashboard-container">
+        <ApplicantSidebar />
+        <div className="job-container">
+          <div className="empty-state">
+            <div className="empty-icon">📋</div>
+            <h2>No Jobs Available</h2>
+            <p>Check back later for new opportunities</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="dashboard-container">
-      <ApplicantSidebar />
-      <div className="job-list">
-        {jobs.map((job, index) => (
-          <div className="job-card" key={index}>
-            <div className="job-details">
-              <span className="job-icon">📍</span>
-              <span className="job-loc">{job.location}</span>
-              <span className="job-emp">💼</span>
-              <span className="job-type">{job.employmentType}</span>
+      <div className="job-container">
+        <div className="job-header">
+          <h1>Available Positions</h1>
+          <p className="job-count">{jobs.length} {jobs.length === 1 ? 'position' : 'positions'} available</p>
+        </div>
+        
+        <div className="job-grid">
+          {jobs.map((job, index) => (
+            <div className="job-card" key={index}>
+              <div className="job-card-header">
+                <div className="job-icon-wrapper">
+                  <span className="job-icon">💼</span>
+                </div>
+                <span className={`employment-badge ${job.employmentType.toLowerCase().replace(' ', '-')}`}>
+                  {job.employmentType}
+                </span>
+              </div>
+
+              <div className="job-card-body">
+                <h3 className="job-title">{job.jobTitle}</h3>
+                <p className="job-description">{job.jobDescription}</p>
+              </div>
+
+              <div className="job-card-footer">
+                <div className="job-meta">
+                  <div className="meta-item">
+                    <span className="meta-icon">💰</span>
+                    <span className="meta-text">{job.salaryRange}</span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-icon">📍</span>
+                    <span className="meta-text">{job.location}</span>
+                  </div>
+                  <div className="meta-item">
+                    <span className="meta-icon">📅</span>
+                    <span className="meta-text">
+                      Closes {new Date(job.applicationDeadline).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => handleApply(job.id)} 
+                  className="apply-job-btn"
+                >
+                  Apply for this job
+                  <span className="btn-arrow">→</span>
+                </button>
+              </div>
             </div>
-            <h3>{job.jobTitle}</h3>
-            <p className='descText'>{job.jobDescription}</p>
-            <p>
-              <strong>Salary:</strong> {job.salaryRange}<br />
-              <strong>Deadline:</strong> {new Date(job.applicationDeadline).toLocaleDateString()}<br />
-              {/* <strong>Qualifications:</strong> {job.qualifications}<br /> */}
-              {/* <strong>Responsibilities:</strong> {job.responsibilities} */}
-            </p>
-            <button onClick={() => handleApply(job.id)} className="apply-btn">
-              Apply for this job
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
   );
 };
