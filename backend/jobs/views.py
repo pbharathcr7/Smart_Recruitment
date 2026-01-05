@@ -45,16 +45,48 @@ class ApplyForJobView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, job_id):
-        job = Job.objects.get(id=job_id)
-        applicant_profile = ApplicantProfile.objects.get(user=request.user)
+        try:
+            job = Job.objects.get(id=job_id)
+            applicant_profile = ApplicantProfile.objects.get(user=request.user)
 
-        application = JobApplication.objects.create(
-            job=job,
-            applicant_profile=applicant_profile
-        )
-        
-        return Response({"message": "Application submitted successfully!"}, status=status.HTTP_201_CREATED)
+            # Check if user has already applied
+            existing_application = JobApplication.objects.filter(
+                job=job,
+                applicant_profile=applicant_profile
+            ).exists()
 
+            if existing_application:
+                return Response(
+                    {"error": "You have already applied for this job"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Create new application if they haven't applied yet
+            application = JobApplication.objects.create(
+                job=job,
+                applicant_profile=applicant_profile
+            )
+            
+            return Response(
+                {"message": "Application submitted successfully!"}, 
+                status=status.HTTP_201_CREATED
+            )
+
+        except Job.DoesNotExist:
+            return Response(
+                {"error": "Job not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except ApplicantProfile.DoesNotExist:
+            return Response(
+                {"error": "Applicant profile not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 

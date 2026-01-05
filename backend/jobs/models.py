@@ -21,6 +21,10 @@ class JobApplication(models.Model):
     applicant_profile = models.ForeignKey(ApplicantProfile, on_delete=models.CASCADE, related_name='applications')
     applied_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        # Add this to prevent duplicate applications
+        unique_together = ('job', 'applicant_profile')
+
     def __str__(self):
         return f"{self.applicant_profile.fullName} applied to {self.job.jobTitle}"
 

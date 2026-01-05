@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'; // Import Link for navigation
 import './JobInfo.css'; 
 
-export const JobInfo = () => {
+export const JobDetail = () => {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
@@ -25,29 +25,27 @@ export const JobInfo = () => {
 
   return (
     <div className="job-list">
-    {jobs.map((job, index) => (
-      <div className="job-card" key={index}>
+    <div className="job-card" key={index}>
         <div className="job-details">
           <span className="job-icon">📍</span>
           <span className="job-loc">{job.location}</span>
           <span className="job-emp">💼</span>
           <span className="job-type">{job.employmentType}</span>
         </div>
-        <h3>{job.jobTitle}</h3>
+        <h3>{job.jobTitle}, {job.department}</h3>
         <p>{job.jobDescription}</p>
   
         <p>
     <strong>Salary:</strong> {job.salaryRange}<br></br>
     <strong>Deadline:</strong> {new Date(job.applicationDeadline).toLocaleDateString()} <br></br>
-    {/* <strong>Qualifications:</strong> {job.qualifications} <br></br> */}
-    {/* <strong>Responsibilities:</strong> {job.responsibilities} */}
+    <strong>Qualifications:</strong> {job.qualifications} <br></br>
+    <strong>Responsibilities:</strong> {job.responsibilities}
   </p>
   
         <Link to={`/jobs/${job.id}/applicants`}>
           <button>View Applicants</button>
         </Link>
       </div>
-    ))}
   </div>
   );
 };

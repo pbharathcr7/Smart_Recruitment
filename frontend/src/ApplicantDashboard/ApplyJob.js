@@ -47,7 +47,7 @@ export const ApplyJob = () => {
       alert('Successfully applied for the job!');
     } catch (error) {
       console.error('Error applying for the job:', error);
-      alert('Failed to apply for the job. Please try again.');
+      alert('Already applied for the job or update your profile to apply for the job.');
     }
   };
 
@@ -65,13 +65,13 @@ export const ApplyJob = () => {
               <span className="job-emp">💼</span>
               <span className="job-type">{job.employmentType}</span>
             </div>
-            <h3>{job.jobTitle}, {job.department}</h3>
-            <p>{job.jobDescription}</p>
+            <h3>{job.jobTitle}</h3>
+            <p className='descText'>{job.jobDescription}</p>
             <p>
               <strong>Salary:</strong> {job.salaryRange}<br />
               <strong>Deadline:</strong> {new Date(job.applicationDeadline).toLocaleDateString()}<br />
-              <strong>Qualifications:</strong> {job.qualifications}<br />
-              <strong>Responsibilities:</strong> {job.responsibilities}
+              {/* <strong>Qualifications:</strong> {job.qualifications}<br /> */}
+              {/* <strong>Responsibilities:</strong> {job.responsibilities} */}
             </p>
             <button onClick={() => handleApply(job.id)} className="apply-btn">
               Apply for this job

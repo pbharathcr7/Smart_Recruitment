@@ -9,16 +9,30 @@
   justify-content: space-between;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
 }
+.sidebar-item.active {
+  background-color: rgba(244, 244, 244, 0.992);
+  font-weight: bold;
+}
+.Icon-root{
+  color: #0066ff;
+}
+.sidebar-item.active .MuiListItemIcon-root {
+  color: #0066ff;  /* or your preferred highlight color */
+}
 
+.sidebar-item.active .MuiListItemText-primary {
+  color: #020000;  /* or your preferred highlight color */
+}
 .ListItem-root {
   margin: 10px 0; /* Add some space between items */
   border-radius: 4px; /* Rounded corners for a softer look */
   transition: background-color 0.3s ease; /* Smooth transition on hover */
 }
 
-.ListItem-root:hover {
-  background-color: #333333; /* Darker background on hover */
+.ListItem-root:hover:not(.active) {
+  background-color: #ffffff; /* Darker background on hover, but not when active */
 }
+
 
 .ListItemText-primary {
   font-weight: bold; /* Bold text for better readability */
@@ -30,7 +44,7 @@
 }
 
 .ListItem-root:active {
-  background-color: #444444; /* Slightly different color on click */
+  background-color: #f3f1f1; /* Slightly different color on click */
 }
 
 .MuiSvgIcon-root {
