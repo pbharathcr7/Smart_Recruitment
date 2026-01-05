@@ -55,6 +55,7 @@
   
   .contact-btn:hover {
     background-color: #0056b3;
+    color: #fff;
   }
   
   .read-btn {
@@ -63,6 +64,7 @@
   
   .read-btn:hover {
     background-color: #117a8b;
+    color: #fff;
   }
   
   .landing-image img {

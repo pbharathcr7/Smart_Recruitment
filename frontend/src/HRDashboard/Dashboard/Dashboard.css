@@ -1,18 +1,21 @@
 .dashboard-container {
-    display: flex;
-  }
-  
-  .dashboard-content {
-    padding: 20px;
-  }
-  
-  .dashboard-stats .stat-item {
-    margin: 10px 0;
-  }
-  
-  .chart {
-    width: 60%; 
-    height: 300px; 
-    margin: auto; 
-  }
-  
+  display: flex;
+  height: 100vh; 
+  overflow: hidden; 
+}
+
+.dashboard-content {
+  flex: 1; 
+  overflow-y: auto; 
+  height: 100vh; 
+}
+
+.dashboard-stats .stat-item {
+  margin: 10px 0;
+}
+
+.chart {
+  width: 60%; 
+  height: 300px; 
+  margin: auto; 
+}

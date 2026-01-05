@@ -102,7 +102,7 @@ function Jobcreation() {
       <Sidebar />
       <div className="jobcreation">
         <form className="job-creation-form" onSubmit={handlePublish}>
-          <h2>Job Creation :</h2>
+          <h2>Job Creation </h2>
           
           <input 
             type="text" 

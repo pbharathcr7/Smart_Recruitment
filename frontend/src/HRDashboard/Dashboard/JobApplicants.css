@@ -1,59 +1,205 @@
-.container{
-  padding: 20px;
-  margin-left: 150px;
-}
-.applicant-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  list-style: none;
-  padding: 0;
+/* Main Container */
+.container {
+  padding: 40px;
+  margin-left: 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  min-height: 100vh;
+  width: 100%;
 }
 
+/* Page Header */
+.app-head {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 32px;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+/* Applicant Grid */
+.applicant-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Applicant Card */
 .applicant-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 20px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  background: #ffffff;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.applicant-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.applicant-card:hover::before {
+  transform: scaleX(1);
 }
 
 .applicant-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.15), 0 6px 12px rgba(118, 75, 162, 0.1);
+  border-color: rgba(102, 126, 234, 0.3);
 }
 
-h2 {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
-  text-align: center;
+/* Applicant Info */
+.applicant-card span {
+  display: block;
+  font-size: 15px;
+  color: #334155;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
-button {
-  background-color: #007bff;
+.applicant-card span:first-child {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.applicant-card br {
+  display: none;
+}
+
+/* Links */
+.applicant-card a{
+  align-items: center;
+  text-decoration: none;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(102, 126, 234, 0.08);
+  transition: all 0.2s ease;
+}
+
+.applicant-card:hover {
+  background: rgba(102, 126, 234, 0.15);
+  color: #5568d3;
+  transform: translateX(2px);
+}
+
+/* No Resume Message */
+.applicant-card p {
+  font-size: 14px;
+  color: #64748b;
+  font-style: italic;
+  margin-top: 12px;
+}
+
+/* Applicant Details/Score */
+.applicant-details {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.applicant-details p {
+  font-size: 14px;
+  color: #475569;
+  margin: 8px 0;
+  font-style: normal;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.applicant-details strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Buttons */
+.analyze-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 10px 20px;
-  margin-left: 10px;
-  margin-top: 10px;
-  border-radius: 6px;
+  padding: 12px 24px;
+  margin-top: 16px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.3s ease-in-out;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  width: 100%;
+  letter-spacing: 0.3px;
 }
 
-button:hover {
-  background-color: #0056b3;
+.analyze-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
-button:disabled {
-  background-color: #6c757d;
+.analyze-button:active {
+  transform: translateY(0);
+}
+
+.analyze-button:disabled {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
   cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.6;
 }
-a{
-  text-decoration: none;
-  color: #007bff;
+
+/* Analyzing State */
+.applicant-card p:last-child {
+  text-align: center;
+  color: #667eea;
+  font-weight: 600;
+  font-style: normal;
+  animation: pulse 2s ease-in-out infinite;
 }
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Dashboard Container Layout */
+.dashboard-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dashboard-container .container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Loading Skeleton Adjustments */
+.applicant-list .react-loading-skeleton {
+  border-radius: 16px;
+}
+

@@ -1,53 +1,103 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Import Link for navigation
-import './JobInfo.css'; 
+import { Link } from 'react-router-dom';
+import './JobInfo.css';
 
 export const JobInfo = () => {
   const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/jobs/');
         if (response.data) {
-          setJobs(response.data); 
+          setJobs(response.data);
         }
       } catch (error) {
         console.error('Error fetching job data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchJobs();
   }, []);
 
-  if (jobs.length === 0) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading opportunities...</p>
+      </div>
+    );
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <div className="empty-state">
+        <div className="empty-icon">📋</div>
+        <h2>No Jobs Available</h2>
+        <p>Check back later for new opportunities</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="job-list">
-    {jobs.map((job, index) => (
-      <div className="job-card" key={index}>
-        <div className="job-details">
-          <span className="job-icon">📍</span>
-          <span className="job-loc">{job.location}</span>
-          <span className="job-emp">💼</span>
-          <span className="job-type">{job.employmentType}</span>
-        </div>
-        <h3>{job.jobTitle}</h3>
-        <p>{job.jobDescription}</p>
-  
-        <p>
-    <strong>Salary:</strong> {job.salaryRange}<br></br>
-    <strong>Deadline:</strong> {new Date(job.applicationDeadline).toLocaleDateString()} <br></br>
-    {/* <strong>Qualifications:</strong> {job.qualifications} <br></br> */}
-    {/* <strong>Responsibilities:</strong> {job.responsibilities} */}
-  </p>
-  
-        <Link to={`/jobs/${job.id}/applicants`}>
-          <button>View Applicants</button>
-        </Link>
+    <div className="job-container">
+      <div className="job-header">
+        <h1>Open Positions</h1>
+        <p className="job-count">{jobs.length} {jobs.length === 1 ? 'position' : 'positions'} available</p>
       </div>
-    ))}
-  </div>
+      
+      <div className="job-grid">
+        {jobs.map((job, index) => (
+          <div className="job-card" key={index}>
+            <div className="job-card-header">
+              <div className="job-icon-wrapper">
+                <span className="job-icon">💼</span>
+              </div>
+              <span className={`employment-badge ${job.employmentType.toLowerCase().replace(' ', '-')}`}>
+                {job.employmentType}
+              </span>
+            </div>
+
+            <div className="job-card-body">
+              <h3 className="job-title">{job.jobTitle}</h3>
+              <p className="job-description">{job.jobDescription}</p>
+            </div>
+
+            <div className="job-card-footer">
+              <div className="job-meta">
+                <div className="meta-item">
+                  <span className="meta-icon">💰</span>
+                  <span className="meta-text">{job.salaryRange}</span>
+                </div>
+                <div className="meta-item">
+                  <span className="meta-icon">📍</span>
+                  <span className="meta-text">{job.location}</span>
+                </div>
+                <div className="meta-item">
+                  <span className="meta-icon">📅</span>
+                  <span className="meta-text">
+                    Closes {new Date(job.applicationDeadline).toLocaleDateString('en-US', { 
+                      month: 'short', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                </div>
+              </div>
+
+              <Link to={`/jobs/${job.id}/applicants`} className="view-applicants-link">
+                <button className="view-applicants-btn">
+                  View Applicants
+                  <span className="btn-arrow">→</span>
+                </button>
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };

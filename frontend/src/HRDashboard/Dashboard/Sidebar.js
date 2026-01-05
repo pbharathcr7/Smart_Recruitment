@@ -6,46 +6,67 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Sidebar.css';
-import { useAuth } from './../../AuthContext'; 
+import { useAuth } from './../../AuthContext';
+
 export const Sidebar = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const location = useLocation();  
+  const location = useLocation();
 
   const handleLogout = () => {
-    logout(); 
-    navigate('/'); 
+    logout();
+    navigate('/');
   };
+
+  const menuItems = [
+    { text: 'Dashboard', icon: DashboardIcon, path: '/dashboard' },
+    { text: 'Job Creation', icon: WorkIcon, path: '/jobcreation' },
+  ];
+
   return (
     <div className="sidebar">
-      <List>
-        <ListItem button component={Link} to="/dashboard" className={`sidebar-item ${location.pathname === '/dashboard' ? 'active' : ''}`}
+      {/* Header with Logo */}
+      <div className="sidebar-header">
+        <div className="logo">
+          <div className="logo-icon">HR</div>
+          <span className="logo-text">JobPortal</span>
+        </div>
+      </div>
+
+      {/* Navigation Menu */}
+      <List className="sidebar-nav">
+        {menuItems.map((item) => {
+          const IconComponent = item.icon;
+          return (
+            <ListItem
+              key={item.path}
+              button
+              component={Link}
+              to={item.path}
+              className={`sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
+            >
+              <ListItemIcon>
+                <IconComponent className="Icon-root" />
+              </ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          );
+        })}
+      </List>
+
+      {/* Footer with Logout */}
+      <div className="sidebar-footer">
+        <ListItem 
+          button 
+          onClick={handleLogout} 
+          className="sidebar-item logout-item"
         >
           <ListItemIcon>
-            <DashboardIcon className='Icon-root'/>
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-        <ListItem button component={Link} to="/jobcreation" className={`sidebar-item ${location.pathname === '/jobcreation' ? 'active' : ''}`}
-        >
-          <ListItemIcon>
-            <WorkIcon className='Icon-root'/>
-          </ListItemIcon>
-          <ListItemText primary="Job Creation" />
-        </ListItem>
-        {/* <ListItem button component={Link} to="/jobapplicants">
-          <ListItemIcon>
-            <DescriptionIcon />
-          </ListItemIcon>
-          <ListItemText primary="Applications" />
-        </ListItem> */}
-        <ListItem button onClick={handleLogout} className="sidebar-item">
-          <ListItemIcon>
-            <LogoutIcon className='Icon-root'/>
+            <LogoutIcon className="Icon-root" />
           </ListItemIcon>
           <ListItemText primary="Log Out" />
         </ListItem>
-      </List>
+      </div>
     </div>
   );
 };
